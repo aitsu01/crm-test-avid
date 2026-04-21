@@ -19,6 +19,14 @@ class MainSidebar implements SidebarExtender
                 $item->route(Avid::getHome());
                 $item->icon('pi pi-home');
             });
+
+            $group->item('Utenti', function (Item $item) {
+                $item->route('users.index');
+                $item->icon('pi pi-home');
+            });
+
+            
+
         });
 
     }
