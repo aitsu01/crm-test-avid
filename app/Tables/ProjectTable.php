@@ -49,22 +49,22 @@ class ProjectTable extends Table
      * @return array<Action | ActionGroup>
      */
     public function getBulkActions(): array
-    {
-        return [
-            Action::make('create', 'Nuovo')
-                ->icon('pi pi-plus')
-                ->url(avidRoute('projects.create'))
-                ->showLabel(),
+{
+    return [
+        Action::make('create', 'Nuovo')
+            ->icon('pi pi-plus')
+            ->url(avidRoute('projects.create'))
+            ->showLabel(),
 
-            // Action::make('delete', 'Elimina')
-            //     ->icon('pi pi-trash')
-            //     ->put()
-            //     ->color(Color::Danger)
-            //     ->requiresConfirmation()
-            //     ->showLabel()
-            //     ->url(avidRoute('projects.bulk.destroy')),
-        ];
-    }
+        Action::make('delete', 'Elimina selezionati')
+            ->icon('pi pi-trash')
+            ->color(Color::Danger)
+            ->requiresConfirmation()
+            ->showLabel()
+            ->delete()
+            ->url(avidRoute('projects.bulk.destroy')),
+    ];
+}
 
     /**
      * @return array<Action | ActionGroup>

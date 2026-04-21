@@ -22,20 +22,19 @@ class ProjectController extends Controller
     }
 
     public function create()
-    {
-        return Inertia::render('avid/default/Form')
-                ->title(__('resources.project.create'))
-                ->breadcrumb(__('resources.project.index'), avidRoute('projects.index'))
-                ->breadcrumb(__('resources.project.create'))
-                ->size('md')
-                ->form(
-                    ProjectForm::make()
-                        ->submit(avidRoute('projects.store'))
-                        ->cancel(avidRoute('projects.index'))
-                        ->post()
-                );
-    }
-
+{
+    return Inertia::render('avid/default/Form')
+            ->title(__('resources.project.create'))
+            ->breadcrumb(__('resources.project.index'), avidRoute('projects.index'))
+            ->breadcrumb(__('resources.project.create'))
+            ->size('md')
+            ->form(
+                ProjectForm::make()
+                    ->submit(avidRoute('projects.store'))
+                    ->cancel(avidRoute('projects.index'))
+                    ->post()
+            );
+}
     public function store(StoreProjectRequest $request)
     {
         Project::create($request->validated());

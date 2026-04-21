@@ -13,6 +13,8 @@ Route::avidPrivate(function () {
 
         Route::resource('users', UserController::class);
         Route::resource('projects', ProjectController::class);
+        Route::resource('projects', ProjectController::class);
+Route::delete('projects/bulk-destroy', [ProjectController::class, 'bulkDestroy'])->name('projects.bulk.destroy');
         
 
         
