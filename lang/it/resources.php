@@ -10,4 +10,17 @@ return [
         'destroy' => 'L\'utente è stato eliminato',
         'bulk_destroy' => 'Gli utenti sono stati eliminati',
     ],
+
+    'project' => [
+        'index' => 'Progetti',
+        'create' => 'Crea progetto',
+        'store' => 'Il progetto è stato creato',
+        'edit' => 'Modifica progetto',
+        'update' => 'Il progetto è stato modificato',
+        'destroy' => 'Il progetto è stato eliminato',
+        'bulk_destroy' => 'I progetti sono stati eliminati',
+    ],
+
+
+
 ];

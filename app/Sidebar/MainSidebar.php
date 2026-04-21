@@ -25,9 +25,15 @@ class MainSidebar implements SidebarExtender
                 $item->icon('pi pi-home');
             });
 
+            $group->item('Progetti', function (Item $item) {
+                $item->route('projects.index');
+                $item->icon('pi pi-briefcase');
+            });
+        });
+
             
 
-        });
+        
 
     }
 }
