@@ -18,27 +18,40 @@ class TaskTable extends Table
         return Task::query()->with('project');
     }
 
-    public function getColumns(): array
-    {
-        return [
-            TextColumn::make('id', 'ID')
-                ->sortable()
-                ->searchable()
-                ->width('6rem'),
+   public function getColumns(): array
+{
+    return [
+        TextColumn::make('id', 'ID')
+            ->sortable()
+            ->searchable()
+            ->width('6rem'),
 
-            TextColumn::make('name', 'Nome')
-                ->sortable()
-                ->searchable(),
+        TextColumn::make('name', 'Nome')
+            ->sortable()
+            ->searchable(),
 
-            TextColumn::make('project.name', 'Progetto')
-                ->sortable()
-                ->searchable(),
+        TextColumn::make('project.name', 'Progetto')
+            ->sortable()
+            ->searchable(),
 
-            TextColumn::make('description', 'Descrizione')
-                ->sortable()
-                ->searchable(),
-        ];
-    }
+        TextColumn::make('status', 'Stato')
+            ->sortable()
+            ->searchable(),
+
+        TextColumn::make('priority', 'Priorità')
+            ->sortable()
+            ->searchable(),
+
+        TextColumn::make('due_date', 'Scadenza')
+            ->sortable()
+            ->searchable()
+            ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('d/m/Y') : ''),
+
+        TextColumn::make('description', 'Descrizione')
+            ->sortable()
+            ->searchable(),
+    ];
+}
 
     public function getFilters(): array
     {

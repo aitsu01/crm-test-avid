@@ -3,6 +3,7 @@
 namespace App\Forms;
 
 use App\Models\Project;
+use Ingenia\Avid\Forms\Components\Date;
 use Ingenia\Avid\Forms\Components\Field;
 use Ingenia\Avid\Forms\Components\Select;
 use Ingenia\Avid\Forms\Components\Text;
@@ -39,6 +40,24 @@ class TaskForm extends Form
                                         ->values()
                                         ->toArray()
                                 ),
+
+                            Select::make('status', 'Stato')
+                                ->required()
+                                ->options([
+                                    ['label' => 'Da fare', 'key' => 'todo'],
+                                    ['label' => 'In corso', 'key' => 'in_progress'],
+                                    ['label' => 'Completata', 'key' => 'done'],
+                                ]),
+
+                            Select::make('priority', 'Priorità')
+                                ->required()
+                                ->options([
+                                    ['label' => 'Bassa', 'key' => 'low'],
+                                    ['label' => 'Media', 'key' => 'medium'],
+                                    ['label' => 'Alta', 'key' => 'high'],
+                                ]),
+
+                            Date::make('due_date', 'Scadenza'),
                         ]),
                 ]),
         ];
