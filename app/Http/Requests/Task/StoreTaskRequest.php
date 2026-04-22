@@ -12,14 +12,12 @@ class StoreTaskRequest extends FormRequest
         return true;
     }
 
-    /**
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'project_id' => ['nullable', 'integer', 'exists:projects,id'],
         ];
     }
 }

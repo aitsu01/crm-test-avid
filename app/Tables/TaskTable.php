@@ -15,7 +15,7 @@ class TaskTable extends Table
 {
     public function getQuery(): Builder
     {
-        return Task::query();
+        return Task::query()->with('project');
     }
 
     public function getColumns(): array
@@ -27,6 +27,10 @@ class TaskTable extends Table
                 ->width('6rem'),
 
             TextColumn::make('name', 'Nome')
+                ->sortable()
+                ->searchable(),
+
+            TextColumn::make('project.name', 'Progetto')
                 ->sortable()
                 ->searchable(),
 

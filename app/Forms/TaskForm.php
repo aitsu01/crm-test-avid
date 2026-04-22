@@ -2,7 +2,9 @@
 
 namespace App\Forms;
 
+use App\Models\Project;
 use Ingenia\Avid\Forms\Components\Field;
+use Ingenia\Avid\Forms\Components\Select;
 use Ingenia\Avid\Forms\Components\Text;
 use Ingenia\Avid\Forms\Form;
 use Ingenia\Avid\Forms\Layouts\Grid;
@@ -23,6 +25,19 @@ class TaskForm extends Form
                         ->schema([
                             Text::make('name', 'Nome')->required(),
                             Text::make('description', 'Descrizione'),
+
+                            Select::make('project_id', 'Progetto')
+                                ->options(
+                                    Project::query()
+                                        ->orderBy('name')
+                                        ->get()
+                                        ->map(fn (Project $project) => [
+                                            'label' => $project->name,
+                                            'key' => $project->id,
+                                        ])
+                                        ->values()
+                                        ->toArray()
+                                ),
                         ]),
                 ]),
         ];
