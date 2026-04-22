@@ -240,18 +240,7 @@ Attualmente il progetto permette di:
 * monitorare task da dashboard
 * ricevere notifiche sugli eventi principali
 
-## Possibili sviluppi futuri
 
-Evoluzioni naturali del progetto:
-
-* assegnare task a un utente responsabile
-* filtri avanzati nelle tabelle task
-* pagina dettaglio progetto con task collegate
-* soft delete
-* storico modifiche
-* commenti sulle task
-* ruoli e permessi
-* esportazione dati
 
 ## Comandi utili
 
