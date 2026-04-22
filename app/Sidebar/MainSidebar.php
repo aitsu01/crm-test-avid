@@ -37,11 +37,7 @@ class MainSidebar implements SidebarExtender
 
 
 
-            $group->item('Logout', function (Item $item) {
-    $item->route('logout.link');
-    $item->icon('pi pi-sign-out');
-});
-
+            
           
 
 

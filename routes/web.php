@@ -24,14 +24,7 @@ Route::avidPrivate(function () {
             ->name('tasks.bulk.destroy');
         Route::resource('tasks', TaskController::class);
 
-        Route::get('logout-link', function (Request $request) {
-    Auth::logout();
-
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect()->route('login');
-})->name('logout.link');
+        
 
 
 
