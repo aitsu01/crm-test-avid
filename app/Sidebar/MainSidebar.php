@@ -29,6 +29,16 @@ class MainSidebar implements SidebarExtender
                 $item->route('projects.index');
                 $item->icon('pi pi-briefcase');
             });
+
+            $group->item('Logout', function (Item $item) {
+    $item->route('logout.link');
+    $item->icon('pi pi-sign-out');
+});
+
+          
+
+
+
         });
 
             

@@ -2,6 +2,7 @@
 import PlaceholderPattern from '@/avid/components/PlaceholderPattern.vue';
 import MainLayout from '@/layouts/avid/MainLayout.vue';
 
+
 </script>
 
 <template>
