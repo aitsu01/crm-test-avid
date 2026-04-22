@@ -30,6 +30,14 @@ class DashboardController extends Controller
             ->take(5)
             ->get(['id', 'name', 'description', 'created_at']);
 
+        $upcomingTasks = Task::query()
+            ->with('project')
+            ->whereNotNull('due_date')
+            ->where('status', '!=', 'done')
+            ->orderBy('due_date')
+            ->take(5)
+            ->get(['id', 'name', 'description', 'project_id', 'due_date', 'status', 'priority']);
+
         return Inertia::render('avid/Dashboard', [
             'totalUsers' => $totalUsers,
             'totalProjects' => $totalProjects,
@@ -37,6 +45,7 @@ class DashboardController extends Controller
             'latestUsers' => $latestUsers,
             'latestProjects' => $latestProjects,
             'latestTasks' => $latestTasks,
+            'upcomingTasks' => $upcomingTasks,
         ])
             ->title('Dashboard')
             ->breadcrumb('Dashboard')

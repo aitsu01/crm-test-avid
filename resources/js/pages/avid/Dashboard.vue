@@ -3,7 +3,7 @@ import { router } from '@inertiajs/vue3';
 import { onMounted, onUnmounted } from 'vue';
 import MainLayout from '@/layouts/avid/MainLayout.vue';
 
-defineProps<{
+const props = defineProps<{
     totalUsers: number;
     totalProjects: number;
     totalTasks: number;
@@ -25,6 +25,18 @@ defineProps<{
         description: string | null;
         created_at: string;
     }>;
+    upcomingTasks?: Array<{
+        id: number;
+        name: string;
+        description: string | null;
+        due_date: string | null;
+        status: string;
+        priority: string;
+        project: {
+            id: number;
+            name: string;
+        } | null;
+    }>;
 }>();
 
 let intervalId: number | undefined;
@@ -39,7 +51,10 @@ onMounted(() => {
                 'latestUsers',
                 'latestProjects',
                 'latestTasks',
+                'upcomingTasks',
             ],
+            preserveScroll: true,
+            preserveState: true,
         });
     }, 10000);
 });
@@ -49,6 +64,90 @@ onUnmounted(() => {
         clearInterval(intervalId);
     }
 });
+
+const getDueDateClass = (dueDate: string | null) => {
+    if (!dueDate) {
+        return 'text-gray-400';
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+
+    const diffInMs = due.getTime() - today.getTime();
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+    if (diffInDays <= 0) {
+        return 'text-red-600 font-semibold';
+    }
+
+    if (diffInDays <= 3) {
+        return 'text-yellow-600 font-semibold';
+    }
+
+    return 'text-gray-500';
+};
+
+const getTaskBorderClass = (dueDate: string | null) => {
+    if (!dueDate) {
+        return 'border';
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+
+    const diffInMs = due.getTime() - today.getTime();
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+    if (diffInDays <= 0) {
+        return 'border border-red-300';
+    }
+
+    if (diffInDays <= 3) {
+        return 'border border-yellow-300';
+    }
+
+    return 'border';
+};
+
+const formatDueDate = (dueDate: string | null) => {
+    if (!dueDate) {
+        return 'Nessuna data';
+    }
+
+    return new Date(dueDate).toLocaleDateString('it-IT');
+};
+
+const formatStatus = (status: string) => {
+    switch (status) {
+        case 'todo':
+            return 'Da fare';
+        case 'in_progress':
+            return 'In corso';
+        case 'done':
+            return 'Completata';
+        default:
+            return status;
+    }
+};
+
+const formatPriority = (priority: string) => {
+    switch (priority) {
+        case 'low':
+            return 'Bassa';
+        case 'medium':
+            return 'Media';
+        case 'high':
+            return 'Alta';
+        default:
+            return priority;
+    }
+};
 </script>
 
 <template>
@@ -178,6 +277,47 @@ onUnmounted(() => {
 
                     <p v-else class="text-sm text-gray-500">
                         Nessuna task presente.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid gap-4">
+                <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                    <h2 class="mb-4 text-lg font-semibold">Task in scadenza</h2>
+
+                    <div v-if="props.upcomingTasks?.length" class="space-y-3">
+                        <div
+                            v-for="task in props.upcomingTasks"
+                            :key="task.id"
+                            class="rounded-lg p-3"
+                            :class="getTaskBorderClass(task.due_date)"
+                        >
+                            <div class="font-medium">{{ task.name }}</div>
+
+                            <div class="text-sm text-gray-500">
+                                {{ task.description || 'Nessuna descrizione' }}
+                            </div>
+
+                            <div class="text-sm text-gray-500">
+                                Progetto: {{ task.project?.name || 'Nessun progetto' }}
+                            </div>
+
+                            <div class="text-sm text-gray-500">
+                                Stato: {{ formatStatus(task.status) }}
+                            </div>
+
+                            <div class="text-sm text-gray-500">
+                                Priorità: {{ formatPriority(task.priority) }}
+                            </div>
+
+                            <div class="text-xs" :class="getDueDateClass(task.due_date)">
+                                Scadenza: {{ formatDueDate(task.due_date) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <p v-else class="text-sm text-gray-500">
+                        Nessuna task in scadenza.
                     </p>
                 </div>
             </div>
