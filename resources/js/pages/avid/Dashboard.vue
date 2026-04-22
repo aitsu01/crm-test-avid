@@ -4,6 +4,8 @@ import { onMounted, onUnmounted } from 'vue';
 import MainLayout from '@/layouts/avid/MainLayout.vue';
 
 defineProps<{
+    totalUsers: number;
+    totalProjects: number;
     latestUsers: Array<{
         id: number;
         name: string;
@@ -23,7 +25,7 @@ let intervalId: number | undefined;
 onMounted(() => {
     intervalId = window.setInterval(() => {
         router.reload({
-            only: ['latestUsers', 'latestProjects'],
+            only: ['totalUsers', 'totalProjects', 'latestUsers', 'latestProjects'],
         });
     }, 10000);
 });
@@ -38,6 +40,48 @@ onUnmounted(() => {
 <template>
     <MainLayout>
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl">
+            <div class="grid gap-4 md:grid-cols-2">
+                <div class="space-y-4">
+                    <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                        <h2 class="text-sm font-medium text-gray-500">Totale utenti</h2>
+                        <p class="mt-2 text-3xl font-bold">{{ totalUsers }}</p>
+                    </div>
+
+                    <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                        <h2 class="text-sm font-medium text-gray-500">Ultimo utente aggiunto</h2>
+                        <p class="mt-2 text-base font-semibold">
+                            {{ latestUsers.length ? latestUsers[0].name : 'Nessun utente' }}
+                        </p>
+                        <p
+                            v-if="latestUsers.length"
+                            class="mt-1 text-sm text-gray-500"
+                        >
+                            {{ latestUsers[0].email }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                        <h2 class="text-sm font-medium text-gray-500">Totale progetti</h2>
+                        <p class="mt-2 text-3xl font-bold">{{ totalProjects }}</p>
+                    </div>
+
+                    <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                        <h2 class="text-sm font-medium text-gray-500">Ultimo progetto aggiunto</h2>
+                        <p class="mt-2 text-base font-semibold">
+                            {{ latestProjects.length ? latestProjects[0].name : 'Nessun progetto' }}
+                        </p>
+                        <p
+                            v-if="latestProjects.length"
+                            class="mt-1 text-sm text-gray-500"
+                        >
+                            {{ latestProjects[0].description || 'Nessuna descrizione' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid gap-4 md:grid-cols-2">
                 <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
                     <h2 class="mb-4 text-lg font-semibold">Ultimi utenti aggiunti</h2>

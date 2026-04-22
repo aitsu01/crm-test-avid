@@ -12,6 +12,14 @@ use Inertia\Inertia;
 use App\Notifications\ProjectCreatedNotification;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\User;
+use App\Notifications\ProjectDeletedNotification;
+use App\Notifications\ProjectsBulkDeletedNotification;
+
+
+
+
+
 class ProjectController extends Controller
 {
     public function index()
@@ -43,11 +51,12 @@ class ProjectController extends Controller
 
         return redirect(avidRoute('projects.index'))->success(__('resources.project.store'));
     }*/
-    public function store(StoreProjectRequest $request)
+public function store(StoreProjectRequest $request)
 {
     $project = Project::create($request->validated());
 
-    Auth::user()?->notify(new ProjectCreatedNotification($project->name));
+    User::all()
+        ->each(fn (User $user) => $user->notify(new ProjectCreatedNotification($project->name)));
 
     return redirect(avidRoute('projects.index'))->success(__('resources.project.store'));
 }
@@ -80,20 +89,44 @@ class ProjectController extends Controller
         return redirect(avidRoute('projects.index'))->success(__('resources.project.update'));
     }
 
-    public function destroy(Project $project)
-    {
-        $project->delete();
+  public function destroy(Project $project)
+{
+    $projectName = $project->name;
+    $deletedBy = Auth::user()?->name ?? 'Utente sconosciuto';
 
-        return back()->success(__('resources.project.destroy'));
+    $project->delete();
+
+    $users = User::query()
+        ->where('id', '!=', Auth::id())
+        ->get();
+
+    foreach ($users as $user) {
+        $user->notify(new ProjectDeletedNotification($projectName, $deletedBy));
     }
 
-    public function bulkDestroy(BulkDestroyProjectRequest $request)
-    {
-        Project::query()
-            ->whereIn('id', $request->validated('selection'))
-            ->get()
-            ->each(fn (Project $project) => $project->delete());
+    return back()->success(__('resources.project.destroy'));
+}
+public function bulkDestroy(BulkDestroyProjectRequest $request)
+{
+    $projects = Project::query()
+        ->whereIn('id', $request->validated('selection'))
+        ->get();
 
-        return back()->success(__('resources.project.bulk_destroy'));
+    $projectNames = $projects->pluck('name')->toArray();
+    $deletedBy = Auth::user()?->name ?? 'Utente sconosciuto';
+
+    $projects->each(fn (Project $project) => $project->delete());
+
+    $users = User::query()
+        ->where('id', '!=', Auth::id())
+        ->get();
+
+    foreach ($users as $user) {
+        $user->notify(new ProjectsBulkDeletedNotification($projectNames, $deletedBy));
     }
+
+    return back()->success(__('resources.project.bulk_destroy'));
+}
+   
+
 }

@@ -10,6 +10,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $totalUsers = User::query()->count();
+        $totalProjects = Project::query()->count();
+
         $latestUsers = User::query()
             ->latest()
             ->take(5)
@@ -21,6 +24,8 @@ class DashboardController extends Controller
             ->get(['id', 'name', 'description', 'created_at']);
 
         return Inertia::render('avid/Dashboard', [
+            'totalUsers' => $totalUsers,
+            'totalProjects' => $totalProjects,
             'latestUsers' => $latestUsers,
             'latestProjects' => $latestProjects,
         ])
