@@ -10,7 +10,8 @@ class ProjectCreatedNotification extends Notification
     use Queueable;
 
     public function __construct(
-        protected string $projectName
+        protected string $projectName,
+        protected string $createdBy
     ) {}
 
     public function via(object $notifiable): array
@@ -22,7 +23,7 @@ class ProjectCreatedNotification extends Notification
     {
         return [
             'title' => 'Nuovo progetto creato',
-            'body' => "Il progetto {$this->projectName} è stato creato correttamente.",
+            'body' => "Il progetto {$this->projectName} è stato creato da {$this->createdBy}.",
             'status' => 'success',
         ];
     }

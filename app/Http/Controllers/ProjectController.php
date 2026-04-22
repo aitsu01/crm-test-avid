@@ -55,8 +55,15 @@ public function store(StoreProjectRequest $request)
 {
     $project = Project::create($request->validated());
 
-    User::all()
-        ->each(fn (User $user) => $user->notify(new ProjectCreatedNotification($project->name)));
+    $createdBy = Auth::user()?->name ?? 'Utente sconosciuto';
+
+    $users = User::query()
+        ->where('id', '!=', Auth::id())
+        ->get();
+
+    foreach ($users as $user) {
+        $user->notify(new ProjectCreatedNotification($project->name, $createdBy));
+    }
 
     return redirect(avidRoute('projects.index'))->success(__('resources.project.store'));
 }
