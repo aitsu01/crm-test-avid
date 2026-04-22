@@ -45,6 +45,24 @@ class ProjectController extends Controller
                     ->post()
             );
 }
+
+public function edit(Project $project)
+{
+    return Inertia::render('avid/default/Form')
+            ->title(__('resources.project.edit'))
+            ->breadcrumb(__('resources.project.index'), avidRoute('projects.index'))
+            ->breadcrumb(__('resources.project.edit'))
+            ->size('md')
+            ->form(
+                ProjectForm::make()
+                    ->submit(avidRoute('projects.update', $project))
+                    ->cancel(avidRoute('projects.index'))
+                    ->defaultData($project)
+                    ->put()
+            );
+}
+
+   
     /*public function store(StoreProjectRequest $request)
     {
         Project::create($request->validated());
@@ -73,21 +91,7 @@ public function store(StoreProjectRequest $request)
         //
     }
 
-    public function edit(Project $project)
-    {
-        return Inertia::render('avid/default/Form')
-                ->title(__('resources.project.edit'))
-                ->breadcrumb(__('resources.project.index'), avidRoute('projects.index'))
-                ->breadcrumb(__('resources.project.edit'))
-                ->size('md')
-                ->form(
-                    ProjectForm::make()
-                        ->submit(avidRoute('projects.update', $project))
-                        ->cancel(avidRoute('projects.index'))
-                        ->defaultData($project)
-                        ->put()
-                );
-    }
+   
 
     public function update(UpdateProjectRequest $request, Project $project)
     {
