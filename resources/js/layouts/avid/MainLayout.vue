@@ -3,6 +3,7 @@ import AvidLayout from '@/avid/layouts/MainLayout.vue';
 import { router } from '@inertiajs/vue3';
 
 
+
 let notificationsInterval: number | undefined;
 
 onMounted(() => {
@@ -14,6 +15,7 @@ onMounted(() => {
         router.reload({
             preserveScroll: true,
             preserveState: true,
+            
         });
     }, 5000);
 });

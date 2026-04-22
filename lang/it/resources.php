@@ -21,6 +21,16 @@ return [
         'bulk_destroy' => 'I progetti sono stati eliminati',
     ],
 
+    'task' => [
+    'index' => 'Tasks',
+    'create' => 'Crea task',
+    'store' => 'La task è stata creata',
+    'edit' => 'Modifica task',
+    'update' => 'La task è stata modificata',
+    'destroy' => 'La task è stata eliminata',
+    'bulk_destroy' => 'Le task sono state eliminate',
+],
+
 
 
 ];
