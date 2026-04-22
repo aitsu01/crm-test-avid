@@ -1,58 +1,292 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CRM Test Avid
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Progetto Laravel + Inertia + Vue costruito come ambiente di prova per prendere confidenza con:
 
-## About Laravel
+* CRUD completi
+* form builder Avid
+* tabelle Avid
+* sidebar custom
+* dashboard personalizzata
+* notifiche database
+* relazioni tra entità
+* validazioni lato backend
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Stack usato
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* Laravel
+* Inertia.js
+* Vue 3
+* Avid (Ingenia)
+* MySQL
+* Tailwind CSS
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Moduli realizzati
 
-## Learning Laravel
+### 1. Utenti
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+È stato realizzato il modulo `users` con:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* lista utenti
+* creazione utente
+* modifica utente
+* eliminazione singola
+* eliminazione multipla
+* integrazione nella sidebar
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+File principali:
 
-## Agentic Development
+* `app/Http/Controllers/UserController.php`
+* `app/Forms/UserForm.php`
+* `app/Tables/UserTable.php`
+* `app/Http/Requests/User/StoreUserRequest.php`
+* `app/Http/Requests/User/UpdateUserRequest.php`
+* `app/Http/Requests/User/BulkDestroyUserRequest.php`
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## 2. Progetti
+
+È stato realizzato il modulo `projects` con:
+
+* lista progetti
+* creazione progetto
+* modifica progetto
+* eliminazione singola
+* eliminazione multipla
+* gestione del campo descrizione
+* integrazione nella sidebar
+* notifiche alla creazione e cancellazione
+
+File principali:
+
+* `app/Http/Controllers/ProjectController.php`
+* `app/Forms/ProjectForm.php`
+* `app/Tables/ProjectTable.php`
+* `app/Models/Project.php`
+* `app/Http/Requests/Project/StoreProjectRequest.php`
+* `app/Http/Requests/Project/UpdateProjectRequest.php`
+* `app/Http/Requests/Project/BulkDestroyProjectRequest.php`
+
+## 3. Task
+
+È stato realizzato il modulo `tasks` con:
+
+* lista task
+* creazione task
+* modifica task
+* eliminazione singola
+* eliminazione multipla
+* collegamento della task a un progetto
+* campi avanzati:
+
+  * `status`
+  * `priority`
+  * `due_date`
+* validazione obbligatoria di:
+
+  * nome
+  * descrizione
+  * progetto associato
+  * stato
+  * priorità
+
+File principali:
+
+* `app/Http/Controllers/TaskController.php`
+* `app/Forms/TaskForm.php`
+* `app/Tables/TaskTable.php`
+* `app/Models/Task.php`
+* `app/Http/Requests/Task/StoreTaskRequest.php`
+* `app/Http/Requests/Task/UpdateTaskRequest.php`
+* `app/Http/Requests/Task/BulkDestroyTaskRequest.php`
+
+## Relazione Task -> Project
+
+Ogni task appartiene a un progetto.
+
+Implementazione:
+
+* colonna `project_id` nella tabella `tasks`
+* relazione `belongsTo` nel model `Task`
+* relazione `hasMany` nel model `Project`
+* select nel form task per scegliere il progetto
+* colonna progetto nella tabella task
+
+## Dashboard personalizzata
+
+La dashboard è stata personalizzata con:
+
+* totale utenti
+* totale progetti
+* totale task
+* ultimo utente aggiunto
+* ultimo progetto aggiunto
+* ultima task inserita
+* ultimi utenti aggiunti
+* ultimi progetti aggiunti
+* ultime task inserite
+* task in scadenza
+* task scadute
+* task completate
+
+### Task in scadenza
+
+Visualizzate ordinate per data di scadenza.
+
+### Task scadute
+
+Visualizzate separatamente con stile evidenziato.
+
+### Task completate
+
+Visualizzate separatamente con card dedicate.
+
+### UX migliorata nella dashboard
+
+Per le task sono stati introdotti:
+
+* badge per stato
+* badge per priorità
+* colori diversi per scadenze
+* card evidenziate per:
+
+  * task in scadenza
+  * task scadute
+  * task completate
+
+## Notifiche
+
+È stato integrato il sistema di notifiche database.
+
+Funzionalità implementate:
+
+* notifica alla creazione di un progetto
+* notifica alla cancellazione di un progetto
+* notifica alla cancellazione multipla di progetti
+
+Le notifiche includono informazioni utili come:
+
+* nome del progetto
+* nome dell’utente che ha effettuato l’azione
+* stato della notifica
+
+È stato anche gestito l’aggiornamento automatico delle notifiche nel layout principale con polling periodico.
+
+## Sidebar personalizzata
+
+La sidebar è stata estesa con:
+
+* Dashboard
+* Utenti
+* Progetti
+* Tasks
+* Logout
+
+Il logout è stato gestito con una route dedicata compatibile con il comportamento della sidebar.
+
+## Routing
+
+Sono state configurate le route per:
+
+* utenti
+* progetti
+* task
+* bulk destroy
+* dashboard
+* logout personalizzato
+
+Le route bulk destroy sono state gestite in modo da evitare conflitti con le resource route.
+
+## Validazioni implementate
+
+### Utenti
+
+* validazione dati base
+* gestione request dedicate
+
+### Progetti
+
+* nome obbligatorio
+* descrizione opzionale
+
+### Task
+
+* nome obbligatorio
+* descrizione obbligatoria
+* progetto obbligatorio
+* stato obbligatorio
+* priorità obbligatoria
+* scadenza opzionale ma valida come data
+
+## Migliorie tecniche affrontate
+
+Durante lo sviluppo sono stati risolti diversi problemi pratici, tra cui:
+
+* `403 Forbidden` dovuto a `authorize(): false`
+* errori su route bulk destroy
+* conflitti tra resource route e route personalizzate
+* problemi di rendering nelle notifiche Avid
+* struttura corretta dei payload notifiche
+* configurazione corretta delle option nei campi `Select` Avid
+* formattazione della data di scadenza nella tabella task
+* polling notifiche senza rompere login e modal
+
+## Struttura funzionale del progetto
+
+Attualmente il progetto permette di:
+
+* gestire utenti
+* gestire progetti
+* gestire task
+* collegare task ai progetti
+* monitorare task da dashboard
+* ricevere notifiche sugli eventi principali
+
+## Possibili sviluppi futuri
+
+Evoluzioni naturali del progetto:
+
+* assegnare task a un utente responsabile
+* filtri avanzati nelle tabelle task
+* pagina dettaglio progetto con task collegate
+* soft delete
+* storico modifiche
+* commenti sulle task
+* ruoli e permessi
+* esportazione dati
+
+## Comandi utili
+
+### Avvio sviluppo
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+php artisan serve
+npm run dev
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Migrazioni
 
-## Contributing
+```bash
+php artisan migrate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Pulizia cache
 
-## Code of Conduct
+```bash
+php artisan optimize:clear
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Stato attuale
 
-## Security Vulnerabilities
+Il progetto è una base gestionale funzionante costruita sopra Avid, utile per fare pratica con:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+* Laravel
+* Inertia
+* Vue
+* form e tabelle custom
+* dashboard dinamiche
+* notifiche
+* relazioni tra entità
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+README creato come riepilogo tecnico e funzionale delle attività svolte sul progetto.
+
