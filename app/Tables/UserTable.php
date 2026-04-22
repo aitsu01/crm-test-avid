@@ -46,6 +46,14 @@ class UserTable extends Table
                 ->icon('pi pi-plus')
                 ->url(avidRoute('users.create'))
                 ->showLabel(),
+
+            Action::make('delete', 'Elimina selezionati')
+                ->icon('pi pi-trash')
+                ->color(Color::Danger)
+                ->requiresConfirmation()
+                ->showLabel()
+                ->delete()
+                ->url(avidRoute('users.bulk.destroy')),
         ];
     }
 
@@ -57,13 +65,13 @@ class UserTable extends Table
                 ->color(Color::Warning)
                 ->url(fn (Model $record) => avidRoute('users.edit', $record)),
 
-            Action::make('delete', 'Elimina')
-                ->icon('pi pi-trash')
-                ->post()
-                ->color(Color::Danger)
-                ->requiresConfirmation()
-                ->delete()
-                ->url(fn (Model $record) => avidRoute('users.destroy', $record)),
+           Action::make('delete', 'Elimina selezionati')
+    ->icon('pi pi-trash')
+    ->color(Color::Danger)
+    ->requiresConfirmation()
+    ->showLabel()
+    ->delete()
+    ->url(avidRoute('users.bulk.destroy')),
         ];
     }
 
