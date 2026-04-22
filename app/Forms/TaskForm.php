@@ -24,9 +24,10 @@ class TaskForm extends Form
                     Grid::make(2)
                         ->schema([
                             Text::make('name', 'Nome')->required(),
-                            Text::make('description', 'Descrizione'),
+                            Text::make('description', 'Descrizione')->required(),
 
                             Select::make('project_id', 'Progetto')
+                                ->required()
                                 ->options(
                                     Project::query()
                                         ->orderBy('name')
