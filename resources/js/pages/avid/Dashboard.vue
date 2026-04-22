@@ -49,6 +49,19 @@ const props = defineProps<{
             name: string;
         } | null;
     }>;
+    completedTasks?: Array<{
+        id: number;
+        name: string;
+        description: string | null;
+        due_date: string | null;
+        status: string;
+        priority: string;
+        created_at: string;
+        project: {
+            id: number;
+            name: string;
+        } | null;
+    }>;
 }>();
 
 let intervalId: number | undefined;
@@ -65,6 +78,7 @@ onMounted(() => {
                 'latestTasks',
                 'upcomingTasks',
                 'overdueTasks',
+                'completedTasks',
             ],
             preserveScroll: true,
             preserveState: true,
@@ -134,6 +148,10 @@ const getUpcomingCardClass = (dueDate: string | null) => {
 
 const getOverdueCardClass = () => {
     return 'border border-red-300 bg-red-50/70';
+};
+
+const getCompletedCardClass = () => {
+    return 'border border-emerald-300 bg-emerald-50/70';
 };
 
 const formatDueDate = (dueDate: string | null) => {
@@ -258,77 +276,56 @@ const getStatusBadgeClass = (status: string) => {
                     <h2 class="mb-4 text-lg font-semibold">Ultimi utenti aggiunti</h2>
 
                     <div v-if="latestUsers.length" class="space-y-3">
-                        <div
-                            v-for="user in latestUsers"
-                            :key="user.id"
-                            class="rounded-lg border p-3"
-                        >
+                        <div v-for="user in latestUsers" :key="user.id" class="rounded-lg border p-3">
                             <div class="font-medium">{{ user.name }}</div>
                             <div class="text-sm text-gray-500">{{ user.email }}</div>
                             <div class="text-xs text-gray-400">
-                                Creato il:
-                                {{ new Date(user.created_at).toLocaleString('it-IT') }}
+                                Creato il: {{ new Date(user.created_at).toLocaleString('it-IT') }}
                             </div>
                         </div>
                     </div>
 
-                    <p v-else class="text-sm text-gray-500">
-                        Nessun utente presente.
-                    </p>
+                    <p v-else class="text-sm text-gray-500">Nessun utente presente.</p>
                 </div>
 
                 <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                     <h2 class="mb-4 text-lg font-semibold">Ultimi progetti aggiunti</h2>
 
                     <div v-if="latestProjects.length" class="space-y-3">
-                        <div
-                            v-for="project in latestProjects"
-                            :key="project.id"
-                            class="rounded-lg border p-3"
-                        >
+                        <div v-for="project in latestProjects" :key="project.id" class="rounded-lg border p-3">
                             <div class="font-medium">{{ project.name }}</div>
                             <div class="text-sm text-gray-500">
                                 {{ project.description || 'Nessuna descrizione' }}
                             </div>
                             <div class="text-xs text-gray-400">
-                                Creato il:
-                                {{ new Date(project.created_at).toLocaleString('it-IT') }}
+                                Creato il: {{ new Date(project.created_at).toLocaleString('it-IT') }}
                             </div>
                         </div>
                     </div>
 
-                    <p v-else class="text-sm text-gray-500">
-                        Nessun progetto presente.
-                    </p>
+                    <p v-else class="text-sm text-gray-500">Nessun progetto presente.</p>
                 </div>
 
                 <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                     <h2 class="mb-4 text-lg font-semibold">Ultime task inserite</h2>
 
                     <div v-if="latestTasks.length" class="space-y-3">
-                        <div
-                            v-for="task in latestTasks"
-                            :key="task.id"
-                            class="rounded-lg border p-3"
-                        >
+                        <div v-for="task in latestTasks" :key="task.id" class="rounded-lg border p-3">
                             <div class="font-medium">{{ task.name }}</div>
                             <div class="text-sm text-gray-500">
                                 {{ task.description || 'Nessuna descrizione' }}
                             </div>
                             <div class="text-xs text-gray-400">
-                                Creata il:
-                                {{ new Date(task.created_at).toLocaleString('it-IT') }}
+                                Creata il: {{ new Date(task.created_at).toLocaleString('it-IT') }}
                             </div>
                         </div>
                     </div>
 
-                    <p v-else class="text-sm text-gray-500">
-                        Nessuna task presente.
-                    </p>
+                    <p v-else class="text-sm text-gray-500">Nessuna task presente.</p>
                 </div>
             </div>
 
-            <div class="grid gap-4 lg:grid-cols-2">
+            <div class="grid gap-4 xl:grid-cols-3">
                 <div class="rounded-xl border border-yellow-200 p-4 shadow-sm">
                     <h2 class="mb-4 text-lg font-semibold text-yellow-700">Task in scadenza</h2>
 
@@ -348,17 +345,11 @@ const getStatusBadgeClass = (status: string) => {
                                 </div>
 
                                 <div class="flex flex-wrap gap-2">
-                                    <span
-                                        class="rounded-full px-2 py-1 text-xs font-medium"
-                                        :class="getStatusBadgeClass(task.status)"
-                                    >
+                                    <span class="rounded-full px-2 py-1 text-xs font-medium" :class="getStatusBadgeClass(task.status)">
                                         {{ formatStatus(task.status) }}
                                     </span>
 
-                                    <span
-                                        class="rounded-full px-2 py-1 text-xs font-medium"
-                                        :class="getPriorityBadgeClass(task.priority)"
-                                    >
+                                    <span class="rounded-full px-2 py-1 text-xs font-medium" :class="getPriorityBadgeClass(task.priority)">
                                         {{ formatPriority(task.priority) }}
                                     </span>
                                 </div>
@@ -379,9 +370,7 @@ const getStatusBadgeClass = (status: string) => {
                         </div>
                     </div>
 
-                    <p v-else class="text-sm text-gray-500">
-                        Nessuna task in scadenza.
-                    </p>
+                    <p v-else class="text-sm text-gray-500">Nessuna task in scadenza.</p>
                 </div>
 
                 <div class="rounded-xl border border-red-200 p-4 shadow-sm">
@@ -403,17 +392,11 @@ const getStatusBadgeClass = (status: string) => {
                                 </div>
 
                                 <div class="flex flex-wrap gap-2">
-                                    <span
-                                        class="rounded-full px-2 py-1 text-xs font-medium"
-                                        :class="getStatusBadgeClass(task.status)"
-                                    >
+                                    <span class="rounded-full px-2 py-1 text-xs font-medium" :class="getStatusBadgeClass(task.status)">
                                         {{ formatStatus(task.status) }}
                                     </span>
 
-                                    <span
-                                        class="rounded-full px-2 py-1 text-xs font-medium"
-                                        :class="getPriorityBadgeClass(task.priority)"
-                                    >
+                                    <span class="rounded-full px-2 py-1 text-xs font-medium" :class="getPriorityBadgeClass(task.priority)">
                                         {{ formatPriority(task.priority) }}
                                     </span>
                                 </div>
@@ -427,16 +410,65 @@ const getStatusBadgeClass = (status: string) => {
                                     </span>
                                 </div>
 
-                                <div class="text-red-700 font-semibold">
+                                <div class="font-semibold text-red-700">
                                     Scadenza: {{ formatDueDate(task.due_date) }}
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <p v-else class="text-sm text-gray-500">
-                        Nessuna task scaduta.
-                    </p>
+                    <p v-else class="text-sm text-gray-500">Nessuna task scaduta.</p>
+                </div>
+
+                <div class="rounded-xl border border-emerald-200 p-4 shadow-sm">
+                    <h2 class="mb-4 text-lg font-semibold text-emerald-700">Task completate</h2>
+
+                    <div v-if="props.completedTasks?.length" class="space-y-3">
+                        <div
+                            v-for="task in props.completedTasks"
+                            :key="task.id"
+                            class="rounded-xl p-4 shadow-sm"
+                            :class="getCompletedCardClass()"
+                        >
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <div class="font-semibold text-emerald-800">{{ task.name }}</div>
+                                    <div class="mt-1 text-sm text-gray-600">
+                                        {{ task.description || 'Nessuna descrizione' }}
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="rounded-full px-2 py-1 text-xs font-medium" :class="getStatusBadgeClass(task.status)">
+                                        {{ formatStatus(task.status) }}
+                                    </span>
+
+                                    <span class="rounded-full px-2 py-1 text-xs font-medium" :class="getPriorityBadgeClass(task.priority)">
+                                        {{ formatPriority(task.priority) }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 flex flex-col gap-1 text-sm text-gray-600">
+                                <div>
+                                    Progetto:
+                                    <span class="font-medium text-gray-800">
+                                        {{ task.project?.name || 'Nessun progetto' }}
+                                    </span>
+                                </div>
+
+                                <div class="text-emerald-700 font-semibold">
+                                    Completata
+                                </div>
+
+                                <div class="text-xs text-gray-500">
+                                    Inserita il: {{ new Date(task.created_at).toLocaleString('it-IT') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p v-else class="text-sm text-gray-500">Nessuna task completata.</p>
                 </div>
             </div>
         </div>
