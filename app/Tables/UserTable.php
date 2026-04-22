@@ -8,9 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Ingenia\Avid\Enums\Color;
 use Ingenia\Avid\Tables\Actions\Action;
 use Ingenia\Avid\Tables\Actions\ActionGroup;
-use Ingenia\Avid\Tables\Columns\Column;
 use Ingenia\Avid\Tables\Columns\TextColumn;
-use Ingenia\Avid\Tables\Filters\Filter;
 use Ingenia\Avid\Tables\Table;
 
 class UserTable extends Table
@@ -65,13 +63,12 @@ class UserTable extends Table
                 ->color(Color::Warning)
                 ->url(fn (Model $record) => avidRoute('users.edit', $record)),
 
-           Action::make('delete', 'Elimina selezionati')
-    ->icon('pi pi-trash')
-    ->color(Color::Danger)
-    ->requiresConfirmation()
-    ->showLabel()
-    ->delete()
-    ->url(avidRoute('users.bulk.destroy')),
+            Action::make('delete', 'Elimina')
+                ->icon('pi pi-trash')
+                ->color(Color::Danger)
+                ->requiresConfirmation()
+                ->delete()
+                ->url(fn (Model $record) => avidRoute('users.destroy', $record)),
         ];
     }
 
