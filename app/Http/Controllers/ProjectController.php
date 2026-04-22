@@ -9,6 +9,8 @@ use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Models\Project;
 use App\Tables\ProjectTable;
 use Inertia\Inertia;
+use App\Notifications\ProjectCreatedNotification;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -35,12 +37,20 @@ class ProjectController extends Controller
                     ->post()
             );
 }
-    public function store(StoreProjectRequest $request)
+    /*public function store(StoreProjectRequest $request)
     {
         Project::create($request->validated());
 
         return redirect(avidRoute('projects.index'))->success(__('resources.project.store'));
-    }
+    }*/
+    public function store(StoreProjectRequest $request)
+{
+    $project = Project::create($request->validated());
+
+    Auth::user()?->notify(new ProjectCreatedNotification($project->name));
+
+    return redirect(avidRoute('projects.index'))->success(__('resources.project.store'));
+}
 
     public function show(Project $project)
     {
