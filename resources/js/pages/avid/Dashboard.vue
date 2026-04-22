@@ -37,6 +37,18 @@ const props = defineProps<{
             name: string;
         } | null;
     }>;
+    overdueTasks?: Array<{
+        id: number;
+        name: string;
+        description: string | null;
+        due_date: string | null;
+        status: string;
+        priority: string;
+        project: {
+            id: number;
+            name: string;
+        } | null;
+    }>;
 }>();
 
 let intervalId: number | undefined;
@@ -52,6 +64,7 @@ onMounted(() => {
                 'latestProjects',
                 'latestTasks',
                 'upcomingTasks',
+                'overdueTasks',
             ],
             preserveScroll: true,
             preserveState: true,
@@ -79,20 +92,24 @@ const getDueDateClass = (dueDate: string | null) => {
     const diffInMs = due.getTime() - today.getTime();
     const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
 
-    if (diffInDays <= 0) {
+    if (diffInDays < 0) {
+        return 'text-red-700 font-semibold';
+    }
+
+    if (diffInDays === 0) {
         return 'text-red-600 font-semibold';
     }
 
     if (diffInDays <= 3) {
-        return 'text-yellow-600 font-semibold';
+        return 'text-yellow-700 font-semibold';
     }
 
     return 'text-gray-500';
 };
 
-const getTaskBorderClass = (dueDate: string | null) => {
+const getUpcomingCardClass = (dueDate: string | null) => {
     if (!dueDate) {
-        return 'border';
+        return 'border border-gray-200';
     }
 
     const today = new Date();
@@ -104,15 +121,19 @@ const getTaskBorderClass = (dueDate: string | null) => {
     const diffInMs = due.getTime() - today.getTime();
     const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
 
-    if (diffInDays <= 0) {
-        return 'border border-red-300';
+    if (diffInDays === 0) {
+        return 'border border-red-300 bg-red-50/60';
     }
 
     if (diffInDays <= 3) {
-        return 'border border-yellow-300';
+        return 'border border-yellow-300 bg-yellow-50/60';
     }
 
-    return 'border';
+    return 'border border-gray-200';
+};
+
+const getOverdueCardClass = () => {
+    return 'border border-red-300 bg-red-50/70';
 };
 
 const formatDueDate = (dueDate: string | null) => {
@@ -148,6 +169,32 @@ const formatPriority = (priority: string) => {
             return priority;
     }
 };
+
+const getPriorityBadgeClass = (priority: string) => {
+    switch (priority) {
+        case 'high':
+            return 'bg-red-100 text-red-700 border border-red-200';
+        case 'medium':
+            return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
+        case 'low':
+            return 'bg-green-100 text-green-700 border border-green-200';
+        default:
+            return 'bg-gray-100 text-gray-700 border border-gray-200';
+    }
+};
+
+const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+        case 'todo':
+            return 'bg-slate-100 text-slate-700 border border-slate-200';
+        case 'in_progress':
+            return 'bg-blue-100 text-blue-700 border border-blue-200';
+        case 'done':
+            return 'bg-emerald-100 text-emerald-700 border border-emerald-200';
+        default:
+            return 'bg-gray-100 text-gray-700 border border-gray-200';
+    }
+};
 </script>
 
 <template>
@@ -155,12 +202,12 @@ const formatPriority = (priority: string) => {
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl">
             <div class="grid gap-4 md:grid-cols-3">
                 <div class="space-y-4">
-                    <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                    <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                         <h2 class="text-sm font-medium text-gray-500">Totale utenti</h2>
                         <p class="mt-2 text-3xl font-bold">{{ totalUsers }}</p>
                     </div>
 
-                    <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                    <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                         <h2 class="text-sm font-medium text-gray-500">Ultimo utente aggiunto</h2>
                         <p class="mt-2 text-base font-semibold">
                             {{ latestUsers.length ? latestUsers[0].name : 'Nessun utente' }}
@@ -172,12 +219,12 @@ const formatPriority = (priority: string) => {
                 </div>
 
                 <div class="space-y-4">
-                    <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                    <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                         <h2 class="text-sm font-medium text-gray-500">Totale progetti</h2>
                         <p class="mt-2 text-3xl font-bold">{{ totalProjects }}</p>
                     </div>
 
-                    <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                    <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                         <h2 class="text-sm font-medium text-gray-500">Ultimo progetto aggiunto</h2>
                         <p class="mt-2 text-base font-semibold">
                             {{ latestProjects.length ? latestProjects[0].name : 'Nessun progetto' }}
@@ -189,12 +236,12 @@ const formatPriority = (priority: string) => {
                 </div>
 
                 <div class="space-y-4">
-                    <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                    <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                         <h2 class="text-sm font-medium text-gray-500">Totale task</h2>
                         <p class="mt-2 text-3xl font-bold">{{ totalTasks }}</p>
                     </div>
 
-                    <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                    <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                         <h2 class="text-sm font-medium text-gray-500">Ultima task inserita</h2>
                         <p class="mt-2 text-base font-semibold">
                             {{ latestTasks.length ? latestTasks[0].name : 'Nessuna task' }}
@@ -207,7 +254,7 @@ const formatPriority = (priority: string) => {
             </div>
 
             <div class="grid gap-4 md:grid-cols-3">
-                <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                     <h2 class="mb-4 text-lg font-semibold">Ultimi utenti aggiunti</h2>
 
                     <div v-if="latestUsers.length" class="space-y-3">
@@ -230,7 +277,7 @@ const formatPriority = (priority: string) => {
                     </p>
                 </div>
 
-                <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                     <h2 class="mb-4 text-lg font-semibold">Ultimi progetti aggiunti</h2>
 
                     <div v-if="latestProjects.length" class="space-y-3">
@@ -255,7 +302,7 @@ const formatPriority = (priority: string) => {
                     </p>
                 </div>
 
-                <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                     <h2 class="mb-4 text-lg font-semibold">Ultime task inserite</h2>
 
                     <div v-if="latestTasks.length" class="space-y-3">
@@ -281,43 +328,114 @@ const formatPriority = (priority: string) => {
                 </div>
             </div>
 
-            <div class="grid gap-4">
-                <div class="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
-                    <h2 class="mb-4 text-lg font-semibold">Task in scadenza</h2>
+            <div class="grid gap-4 lg:grid-cols-2">
+                <div class="rounded-xl border border-yellow-200 p-4 shadow-sm">
+                    <h2 class="mb-4 text-lg font-semibold text-yellow-700">Task in scadenza</h2>
 
                     <div v-if="props.upcomingTasks?.length" class="space-y-3">
                         <div
                             v-for="task in props.upcomingTasks"
                             :key="task.id"
-                            class="rounded-lg p-3"
-                            :class="getTaskBorderClass(task.due_date)"
+                            class="rounded-xl p-4 shadow-sm"
+                            :class="getUpcomingCardClass(task.due_date)"
                         >
-                            <div class="font-medium">{{ task.name }}</div>
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <div class="font-semibold">{{ task.name }}</div>
+                                    <div class="mt-1 text-sm text-gray-500">
+                                        {{ task.description || 'Nessuna descrizione' }}
+                                    </div>
+                                </div>
 
-                            <div class="text-sm text-gray-500">
-                                {{ task.description || 'Nessuna descrizione' }}
+                                <div class="flex flex-wrap gap-2">
+                                    <span
+                                        class="rounded-full px-2 py-1 text-xs font-medium"
+                                        :class="getStatusBadgeClass(task.status)"
+                                    >
+                                        {{ formatStatus(task.status) }}
+                                    </span>
+
+                                    <span
+                                        class="rounded-full px-2 py-1 text-xs font-medium"
+                                        :class="getPriorityBadgeClass(task.priority)"
+                                    >
+                                        {{ formatPriority(task.priority) }}
+                                    </span>
+                                </div>
                             </div>
 
-                            <div class="text-sm text-gray-500">
-                                Progetto: {{ task.project?.name || 'Nessun progetto' }}
-                            </div>
+                            <div class="mt-3 flex flex-col gap-1 text-sm text-gray-500">
+                                <div>
+                                    Progetto:
+                                    <span class="font-medium text-gray-700">
+                                        {{ task.project?.name || 'Nessun progetto' }}
+                                    </span>
+                                </div>
 
-                            <div class="text-sm text-gray-500">
-                                Stato: {{ formatStatus(task.status) }}
-                            </div>
-
-                            <div class="text-sm text-gray-500">
-                                Priorità: {{ formatPriority(task.priority) }}
-                            </div>
-
-                            <div class="text-xs" :class="getDueDateClass(task.due_date)">
-                                Scadenza: {{ formatDueDate(task.due_date) }}
+                                <div :class="getDueDateClass(task.due_date)">
+                                    Scadenza: {{ formatDueDate(task.due_date) }}
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <p v-else class="text-sm text-gray-500">
                         Nessuna task in scadenza.
+                    </p>
+                </div>
+
+                <div class="rounded-xl border border-red-200 p-4 shadow-sm">
+                    <h2 class="mb-4 text-lg font-semibold text-red-700">Task scadute</h2>
+
+                    <div v-if="props.overdueTasks?.length" class="space-y-3">
+                        <div
+                            v-for="task in props.overdueTasks"
+                            :key="task.id"
+                            class="rounded-xl p-4 shadow-sm"
+                            :class="getOverdueCardClass()"
+                        >
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <div class="font-semibold text-red-800">{{ task.name }}</div>
+                                    <div class="mt-1 text-sm text-gray-600">
+                                        {{ task.description || 'Nessuna descrizione' }}
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-wrap gap-2">
+                                    <span
+                                        class="rounded-full px-2 py-1 text-xs font-medium"
+                                        :class="getStatusBadgeClass(task.status)"
+                                    >
+                                        {{ formatStatus(task.status) }}
+                                    </span>
+
+                                    <span
+                                        class="rounded-full px-2 py-1 text-xs font-medium"
+                                        :class="getPriorityBadgeClass(task.priority)"
+                                    >
+                                        {{ formatPriority(task.priority) }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 flex flex-col gap-1 text-sm text-gray-600">
+                                <div>
+                                    Progetto:
+                                    <span class="font-medium text-gray-800">
+                                        {{ task.project?.name || 'Nessun progetto' }}
+                                    </span>
+                                </div>
+
+                                <div class="text-red-700 font-semibold">
+                                    Scadenza: {{ formatDueDate(task.due_date) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p v-else class="text-sm text-gray-500">
+                        Nessuna task scaduta.
                     </p>
                 </div>
             </div>

@@ -34,6 +34,16 @@ class DashboardController extends Controller
             ->with('project')
             ->whereNotNull('due_date')
             ->where('status', '!=', 'done')
+            ->whereDate('due_date', '>=', now()->toDateString())
+            ->orderBy('due_date')
+            ->take(5)
+            ->get(['id', 'name', 'description', 'project_id', 'due_date', 'status', 'priority']);
+
+        $overdueTasks = Task::query()
+            ->with('project')
+            ->whereNotNull('due_date')
+            ->where('status', '!=', 'done')
+            ->whereDate('due_date', '<', now()->toDateString())
             ->orderBy('due_date')
             ->take(5)
             ->get(['id', 'name', 'description', 'project_id', 'due_date', 'status', 'priority']);
@@ -46,6 +56,7 @@ class DashboardController extends Controller
             'latestProjects' => $latestProjects,
             'latestTasks' => $latestTasks,
             'upcomingTasks' => $upcomingTasks,
+            'overdueTasks' => $overdueTasks,
         ])
             ->title('Dashboard')
             ->breadcrumb('Dashboard')
