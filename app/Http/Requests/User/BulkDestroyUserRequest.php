@@ -9,17 +9,15 @@ class BulkDestroyUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return auth()->check() && auth()->user()->isAdmin();
     }
 
-    /**
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
             'selection' => ['required', 'array'],
             'selection.*' => ['required', 'integer', 'exists:users,id'],
         ];
+        
     }
 }

@@ -29,6 +29,24 @@ class UserTable extends Table
             TextColumn::make('name', 'Nome')
                 ->sortable()
                 ->searchable(),
+
+            TextColumn::make('email', 'Email')
+                ->sortable()
+                ->searchable(),
+
+            TextColumn::make('role', 'Ruolo')
+                ->sortable()
+                ->searchable(),
+
+            TextColumn::make('created_at', 'Creato')
+                ->sortable()
+                ->searchable()
+                ->dateTime(),
+
+            TextColumn::make('updated_at', 'Modificato')
+                ->sortable()
+                ->searchable()
+                ->dateTime(),
         ];
     }
 
@@ -43,7 +61,7 @@ class UserTable extends Table
             Action::make('create', 'Nuovo')
                 ->icon('pi pi-plus')
                 ->url(avidRoute('users.create'))
-                ->openUrlInModal(true, 'lg')
+                ->openUrlInModal(true, 'md')
                 ->showLabel(),
 
             Action::make('delete', 'Elimina selezionati')
@@ -63,7 +81,7 @@ class UserTable extends Table
                 ->icon('pi pi-pen-to-square')
                 ->color(Color::Warning)
                 ->url(fn (Model $record) => avidRoute('users.edit', $record))
-                ->openUrlInModal(true, 'lg'),
+                ->openUrlInModal(true, 'md'),
 
             Action::make('delete', 'Elimina')
                 ->icon('pi pi-trash')

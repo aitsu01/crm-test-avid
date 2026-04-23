@@ -11,14 +11,19 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalUsers = User::query()->count();
+        $isAdmin = auth()->check() && auth()->user()->isAdmin();
+
+        $totalUsers = $isAdmin ? User::query()->count() : 0;
+
         $totalProjects = Project::query()->count();
         $totalTasks = Task::query()->count();
 
-        $latestUsers = User::query()
-            ->latest()
-            ->take(5)
-            ->get(['id', 'name', 'email', 'created_at']);
+        $latestUsers = $isAdmin
+            ? User::query()
+                ->latest()
+                ->take(5)
+                ->get(['id', 'name', 'email', 'created_at'])
+            : collect();
 
         $latestProjects = Project::query()
             ->latest()
@@ -56,6 +61,7 @@ class DashboardController extends Controller
             ->get(['id', 'name', 'description', 'project_id', 'due_date', 'status', 'priority', 'created_at']);
 
         return Inertia::render('avid/Dashboard', [
+            'isAdmin' => $isAdmin,
             'totalUsers' => $totalUsers,
             'totalProjects' => $totalProjects,
             'totalTasks' => $totalTasks,

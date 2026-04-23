@@ -4,6 +4,7 @@ import { onMounted, onUnmounted } from 'vue';
 import MainLayout from '@/layouts/avid/MainLayout.vue';
 
 const props = defineProps<{
+    isAdmin: boolean;
     totalUsers: number;
     totalProjects: number;
     totalTasks: number;
@@ -70,6 +71,7 @@ onMounted(() => {
     intervalId = window.setInterval(() => {
         router.reload({
             only: [
+                'isAdmin',
                 'totalUsers',
                 'totalProjects',
                 'totalTasks',
@@ -218,8 +220,8 @@ const getStatusBadgeClass = (status: string) => {
 <template>
     <MainLayout>
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl">
-            <div class="grid gap-4 md:grid-cols-3">
-                <div class="space-y-4">
+            <div class="grid gap-4" :class="props.isAdmin ? 'md:grid-cols-3' : 'md:grid-cols-2'">
+                <div v-if="props.isAdmin" class="space-y-4">
                     <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
                         <h2 class="text-sm font-medium text-gray-500">Totale utenti</h2>
                         <p class="mt-2 text-3xl font-bold">{{ totalUsers }}</p>
@@ -271,8 +273,11 @@ const getStatusBadgeClass = (status: string) => {
                 </div>
             </div>
 
-            <div class="grid gap-4 md:grid-cols-3">
-                <div class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border">
+            <div class="grid gap-4" :class="props.isAdmin ? 'md:grid-cols-3' : 'md:grid-cols-2'">
+                <div
+                    v-if="props.isAdmin"
+                    class="rounded-xl border border-sidebar-border/70 p-4 shadow-sm dark:border-sidebar-border"
+                >
                     <h2 class="mb-4 text-lg font-semibold">Ultimi utenti aggiunti</h2>
 
                     <div v-if="latestUsers.length" class="space-y-3">

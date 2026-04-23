@@ -3,6 +3,7 @@
 namespace App\Forms;
 
 use Ingenia\Avid\Forms\Components\Field;
+use Ingenia\Avid\Forms\Components\Select;
 use Ingenia\Avid\Forms\Components\Text;
 use Ingenia\Avid\Forms\Form;
 use Ingenia\Avid\Forms\Layouts\Grid;
@@ -23,8 +24,13 @@ class UserForm extends Form
                         ->schema([
                             Text::make('name', 'Nome')->required(),
                             Text::make('email', 'Email')->required(),
-                            Text::make('password', 'Password')->required(),
-                            Text::make('password_confirmation', 'Conferma password')->required(),
+
+                            Select::make('role', 'Ruolo')
+                                ->required()
+                                ->options([
+                                    ['label' => 'Admin', 'key' => 'admin'],
+                                    ['label' => 'Utente', 'key' => 'user'],
+                                ]),
                         ]),
                 ]),
         ];
