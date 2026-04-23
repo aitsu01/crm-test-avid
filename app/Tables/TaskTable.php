@@ -2,13 +2,16 @@
 
 namespace App\Tables;
 
+use App\Models\Project;
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Ingenia\Avid\Enums\Color;
 use Ingenia\Avid\Tables\Actions\Action;
-use Ingenia\Avid\Tables\Actions\ActionGroup;
 use Ingenia\Avid\Tables\Columns\TextColumn;
+use Ingenia\Avid\Tables\Filters\DateFilter;
+use Ingenia\Avid\Tables\Filters\SelectFilter;
 use Ingenia\Avid\Tables\Table;
 
 class TaskTable extends Table
@@ -45,7 +48,12 @@ class TaskTable extends Table
             TextColumn::make('due_date', 'Scadenza')
                 ->sortable()
                 ->searchable()
-                ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('d/m/Y') : ''),
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('d/m/Y') : ''),
+
+            TextColumn::make('created_at', 'Creata il')
+                ->sortable()
+                ->searchable()
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('d/m/Y H:i') : ''),
 
             TextColumn::make('description', 'Descrizione')
                 ->sortable()
@@ -55,7 +63,35 @@ class TaskTable extends Table
 
     public function getFilters(): array
     {
-        return [];
+        return [
+            SelectFilter::make('project_id')
+                ->label('Progetto')
+                ->options(
+                    Project::query()
+                        ->orderBy('name')
+                        ->pluck('name', 'id')
+                        ->toArray()
+                ),
+
+            SelectFilter::make('status')
+                ->label('Stato')
+                ->options([
+                    'todo' => 'Da fare',
+                    'in_progress' => 'In corso',
+                    'done' => 'Completata',
+                ]),
+
+            SelectFilter::make('priority')
+                ->label('Priorità')
+                ->options([
+                    'low' => 'Bassa',
+                    'medium' => 'Media',
+                    'high' => 'Alta',
+                ]),
+
+            DateFilter::make('due_date')
+                ->label('Scadenza'),
+        ];
     }
 
     public function getBulkActions(): array
@@ -99,4 +135,15 @@ class TaskTable extends Table
     {
         return null;
     }
+
+    public function defaultSort(): ?array
+    {
+        return ['due_date' => 'asc'];
+    }
+
+    
+
+    
+
+    
 }
