@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Notifications\ProjectDeletedNotification;
 use App\Notifications\ProjectsBulkDeletedNotification;
+use App\Notifications\ProjectUpdatedNotification;
 
 class ProjectController extends Controller
 {
@@ -80,11 +81,21 @@ class ProjectController extends Controller
     }
 
     public function update(UpdateProjectRequest $request, Project $project)
-    {
-        $project->update($request->validated());
+{
+    $project->update($request->validated());
 
-        return redirect(avidRoute('projects.index'))->success(__('resources.project.update'));
+    $updatedBy = Auth::user()?->name ?? 'Utente sconosciuto';
+
+    $users = User::query()
+        ->where('id', '!=', Auth::id())
+        ->get();
+
+    foreach ($users as $user) {
+        $user->notify(new ProjectUpdatedNotification($project->name, $updatedBy));
     }
+
+    return redirect(avidRoute('projects.index'))->success(__('resources.project.update'));
+}
 
     public function destroy(Project $project)
     {
