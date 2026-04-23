@@ -55,6 +55,11 @@ class TaskTable extends Table
                 ->searchable()
                 ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('d/m/Y H:i') : ''),
 
+            TextColumn::make('updated_at', 'Modificata il')
+                ->sortable()
+                ->searchable()
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('d/m/Y H:i') : ''),
+
             TextColumn::make('description', 'Descrizione')
                 ->sortable()
                 ->searchable(),
