@@ -3,6 +3,7 @@
 namespace App\Tables;
 
 use App\Models\Project;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Ingenia\Avid\Enums\Color;
@@ -10,11 +11,9 @@ use Ingenia\Avid\Tables\Actions\Action;
 use Ingenia\Avid\Tables\Actions\ActionGroup;
 use Ingenia\Avid\Tables\Columns\Column;
 use Ingenia\Avid\Tables\Columns\TextColumn;
+use Ingenia\Avid\Tables\Filters\DateFilter;
 use Ingenia\Avid\Tables\Filters\Filter;
 use Ingenia\Avid\Tables\Table;
-use Carbon\Carbon;
-
-
 
 class ProjectTable extends Table
 {
@@ -47,15 +46,10 @@ class ProjectTable extends Table
                 ->searchable()
                 ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('d/m/Y H:i') : ''),
 
-            TextColumn::make('updated_at', 'Aggiornato il')
+            TextColumn::make('updated_at', 'Modificato il')
                 ->sortable()
                 ->searchable()
                 ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('d/m/Y H:i') : ''),
-
-                
-
-
-            
         ];
     }
 
@@ -64,7 +58,13 @@ class ProjectTable extends Table
      */
     public function getFilters(): array
     {
-        return [];
+        return [
+            DateFilter::make('created_at')
+                ->label('Creato il'),
+
+            DateFilter::make('updated_at')
+                ->label('Modificato il'),
+        ];
     }
 
     /**
@@ -114,5 +114,10 @@ class ProjectTable extends Table
     public function getRecordUrl(Model $record): ?string
     {
         return null;
+    }
+
+    public function defaultSort(): ?array
+    {
+        return ['updated_at' => 'desc'];
     }
 }
