@@ -12,6 +12,9 @@ use Ingenia\Avid\Tables\Columns\Column;
 use Ingenia\Avid\Tables\Columns\TextColumn;
 use Ingenia\Avid\Tables\Filters\Filter;
 use Ingenia\Avid\Tables\Table;
+use Carbon\Carbon;
+
+
 
 class ProjectTable extends Table
 {
@@ -38,6 +41,21 @@ class ProjectTable extends Table
             TextColumn::make('description', 'Descrizione')
                 ->sortable()
                 ->searchable(),
+
+            TextColumn::make('created_at', 'Creato il')
+                ->sortable()
+                ->searchable()
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('d/m/Y H:i') : ''),
+
+            TextColumn::make('updated_at', 'Aggiornato il')
+                ->sortable()
+                ->searchable()
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('d/m/Y H:i') : ''),
+
+                
+
+
+            
         ];
     }
 
