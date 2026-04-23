@@ -58,6 +58,7 @@ class ProjectTable extends Table
             Action::make('create', 'Nuovo')
                 ->icon('pi pi-plus')
                 ->url(avidRoute('projects.create'))
+                ->openUrlInModal(true, 'md')
                 ->showLabel(),
 
             Action::make('delete', 'Elimina selezionati')
@@ -79,7 +80,8 @@ class ProjectTable extends Table
             Action::make('edit', 'Modifica')
                 ->icon('pi pi-pen-to-square')
                 ->color(Color::Warning)
-                ->url(fn (Model $record) => avidRoute('projects.edit', $record)),
+                ->url(fn (Model $record) => avidRoute('projects.edit', $record))
+                ->openUrlInModal(true, 'md'),
 
             Action::make('delete', 'Elimina')
                 ->icon('pi pi-trash')
@@ -93,6 +95,6 @@ class ProjectTable extends Table
 
     public function getRecordUrl(Model $record): ?string
     {
-        return avidRoute('projects.edit', $record);
+        return null;
     }
 }
