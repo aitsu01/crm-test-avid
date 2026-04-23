@@ -23,7 +23,7 @@ class ProjectController extends Controller
         return Inertia::render('avid/default/Table')
                 ->title(__('resources.project.index'))
                 ->breadcrumb(__('resources.project.index'))
-                ->size('md')
+                ->size('xl')
                 ->table(ProjectTable::make());
     }
 

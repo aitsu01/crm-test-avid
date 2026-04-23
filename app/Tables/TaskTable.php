@@ -2,6 +2,7 @@
 
 namespace App\Tables;
 
+use App\Enums\Priority;
 use App\Models\Project;
 use App\Models\Task;
 use Carbon\Carbon;
@@ -13,6 +14,8 @@ use Ingenia\Avid\Tables\Columns\TextColumn;
 use Ingenia\Avid\Tables\Filters\DateFilter;
 use Ingenia\Avid\Tables\Filters\SelectFilter;
 use Ingenia\Avid\Tables\Table;
+
+use App\Enums\TaskStatus;
 
 class TaskTable extends Table
 {
@@ -67,37 +70,24 @@ class TaskTable extends Table
     }
 
     public function getFilters(): array
-    {
-        return [
-            SelectFilter::make('project_id')
-                ->label('Progetto')
-                ->options(
-                    Project::query()
-                        ->orderBy('name')
-                        ->pluck('name', 'id')
-                        ->toArray()
-                ),
+{
+    return [
+        SelectFilter::make('project_id')
+            ->label('Progetto')
+            ->options(Project::asOptions()),
 
-            SelectFilter::make('status')
-                ->label('Stato')
-                ->options([
-                    'todo' => 'Da fare',
-                    'in_progress' => 'In corso',
-                    'done' => 'Completata',
-                ]),
+        SelectFilter::make('status')
+            ->label('Stato')
+            ->options(TaskStatus::asOptions()),
 
-            SelectFilter::make('priority')
-                ->label('Priorità')
-                ->options([
-                    'low' => 'Bassa',
-                    'medium' => 'Media',
-                    'high' => 'Alta',
-                ]),
+        SelectFilter::make('priority')
+            ->label('Priorità')
+            ->options(Priority::asOptions()),
 
-            DateFilter::make('due_date')
-                ->label('Scadenza'),
-        ];
-    }
+        DateFilter::make('due_date')
+            ->label('Scadenza'),
+    ];
+}
 
     public function getBulkActions(): array
     {

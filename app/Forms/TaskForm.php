@@ -2,6 +2,8 @@
 
 namespace App\Forms;
 
+use App\Enums\Priority;
+use App\Enums\TaskStatus;
 use App\Models\Project;
 use Ingenia\Avid\Forms\Components\Date;
 use Ingenia\Avid\Forms\Components\Field;
@@ -43,19 +45,11 @@ class TaskForm extends Form
 
                             Select::make('status', 'Stato')
                                 ->required()
-                                ->options([
-                                    ['label' => 'Da fare', 'key' => 'todo'],
-                                    ['label' => 'In corso', 'key' => 'in_progress'],
-                                    ['label' => 'Completata', 'key' => 'done'],
-                                ]),
+                                ->options(TaskStatus::asOptions()),
 
                             Select::make('priority', 'Priorità')
                                 ->required()
-                                ->options([
-                                    ['label' => 'Bassa', 'key' => 'low'],
-                                    ['label' => 'Media', 'key' => 'medium'],
-                                    ['label' => 'Alta', 'key' => 'high'],
-                                ]),
+                                ->options(Priority::asOptions()),
 
                             Date::make('due_date', 'Scadenza'),
                         ]),

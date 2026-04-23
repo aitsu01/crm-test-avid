@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import MainLayout from '@/layouts/avid/MainLayout.vue';
 
 const props = defineProps<{
@@ -66,9 +66,20 @@ const props = defineProps<{
 }>();
 
 let intervalId: number | undefined;
+const isReloading = ref(false);
 
 onMounted(() => {
     intervalId = window.setInterval(() => {
+        if (document.visibilityState !== 'visible') {
+            return;
+        }
+
+        if (isReloading.value) {
+            return;
+        }
+
+        isReloading.value = true;
+
         router.reload({
             only: [
                 'isAdmin',
@@ -84,6 +95,9 @@ onMounted(() => {
             ],
             preserveScroll: true,
             preserveState: true,
+            onFinish: () => {
+                isReloading.value = false;
+            },
         });
     }, 10000);
 });
