@@ -24,6 +24,8 @@ declare module 'vue' {
     PrimeColumn: typeof import('primevue/column')['default']
     PrimeDataTable: typeof import('primevue/datatable')['default']
     PrimeDatePicker: typeof import('primevue/datepicker')['default']
+    PrimeDialog: typeof import('primevue/dialog')['default']
+    PrimeDrawer: typeof import('primevue/drawer')['default']
     PrimeEditor: typeof import('primevue/editor')['default']
     PrimeFieldset: typeof import('primevue/fieldset')['default']
     PrimeFileUpload: typeof import('primevue/fileupload')['default']

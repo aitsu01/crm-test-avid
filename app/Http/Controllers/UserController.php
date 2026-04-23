@@ -23,19 +23,19 @@ class UserController extends Controller
     }
 
     public function create()
-    {
-        return Inertia::render('avid/default/Form')
-                ->title(__('resources.user.create'))
-                ->breadcrumb(__('resources.user.index'), avidRoute('users.index'))
-                ->breadcrumb(__('resources.user.create'))
-                ->size('md')
-                ->form(
-                    UserForm::make()
-                        ->submit(avidRoute('users.store'))
-                        ->cancel(avidRoute('users.index'))
-                        ->post()
-                );
-    }
+{
+    return Inertia::render('avid/default/FormModal')
+            ->title(__('resources.user.create'))
+            ->breadcrumb(__('resources.user.index'), avidRoute('users.index'))
+            ->breadcrumb(__('resources.user.create'))
+            ->size('md')
+            ->form(
+                UserForm::make()
+                    ->submit(avidRoute('users.store'))
+                    ->cancel(avidRoute('users.index'))
+                    ->post()
+            );
+}
 
     public function store(StoreUserRequest $request)
     {
@@ -50,20 +50,20 @@ class UserController extends Controller
     }
 
     public function edit(User $user)
-    {
-        return Inertia::render('avid/default/Form')
-                ->title(__('resources.user.edit'))
-                ->breadcrumb(__('resources.user.index'), avidRoute('users.index'))
-                ->breadcrumb(__('resources.user.edit'))
-                ->size('md')
-                ->form(
-                    UserForm::make()
-                        ->submit(avidRoute('users.update', $user))
-                        ->cancel(avidRoute('users.index'))
-                        ->defaultData($user)
-                        ->put()
-                );
-    }
+{
+    return Inertia::render('avid/default/FormModal')
+            ->title(__('resources.user.edit'))
+            ->breadcrumb(__('resources.user.index'), avidRoute('users.index'))
+            ->breadcrumb(__('resources.user.edit'))
+            ->size('md')
+            ->form(
+                UserForm::make()
+                    ->submit(avidRoute('users.update', $user))
+                    ->cancel(avidRoute('users.index'))
+                    ->defaultData($user)
+                    ->put()
+            );
+}
 
     public function update(UpdateUserRequest $request, User $user)
     {
