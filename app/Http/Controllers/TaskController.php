@@ -10,8 +10,6 @@ use App\Models\Task;
 use App\Tables\TaskTable;
 use Inertia\Inertia;
 
-use Illuminate\Http\Request;
-
 class TaskController extends Controller
 {
     public function index()
@@ -24,53 +22,47 @@ class TaskController extends Controller
     }
 
     public function create()
-{
-    return Inertia::render('avid/default/Form')
-            ->title(__('resources.task.create'))
-            ->breadcrumb(__('resources.task.index'), avidRoute('tasks.index'))
-            ->breadcrumb(__('resources.task.create'))
-            ->size('md')
-            ->form(
-                TaskForm::make()
-                    ->submit(avidRoute('tasks.store'))
-                    ->cancel(avidRoute('tasks.index'))
-                    ->post()
-            );
-}
+    {
+        return Inertia::render('avid/default/FormModal')
+                ->title(__('resources.task.create'))
+                ->breadcrumb(__('resources.task.index'), avidRoute('tasks.index'))
+                ->breadcrumb(__('resources.task.create'))
+                ->size('md')
+                ->form(
+                    TaskForm::make()
+                        ->submit(avidRoute('tasks.store'))
+                        ->cancel(avidRoute('tasks.index'))
+                        ->post()
+                );
+    }
 
-public function store(StoreTaskRequest $request)
-{
-    Task::create($request->validated());
+    public function store(StoreTaskRequest $request)
+    {
+        Task::create($request->validated());
 
-    return redirect(avidRoute('tasks.index'))->success(__('resources.task.store'));
-}
-
-public function edit(Task $task)
-{
-    return Inertia::render('avid/default/Form')
-            ->title(__('resources.task.edit'))
-            ->breadcrumb(__('resources.task.index'), avidRoute('tasks.index'))
-            ->breadcrumb(__('resources.task.edit'))
-            ->size('md')
-            ->form(
-                TaskForm::make()
-                    ->submit(avidRoute('tasks.update', $task))
-                    ->cancel(avidRoute('tasks.index'))
-                    ->defaultData($task)
-                    ->put()
-            );
-}
-
-    
-
-    
+        return redirect(avidRoute('tasks.index'))->success(__('resources.task.store'));
+    }
 
     public function show(Task $task)
     {
         //
     }
 
-    
+    public function edit(Task $task)
+    {
+        return Inertia::render('avid/default/FormModal')
+                ->title(__('resources.task.edit'))
+                ->breadcrumb(__('resources.task.index'), avidRoute('tasks.index'))
+                ->breadcrumb(__('resources.task.edit'))
+                ->size('md')
+                ->form(
+                    TaskForm::make()
+                        ->submit(avidRoute('tasks.update', $task))
+                        ->cancel(avidRoute('tasks.index'))
+                        ->defaultData($task)
+                        ->put()
+                );
+    }
 
     public function update(UpdateTaskRequest $request, Task $task)
     {

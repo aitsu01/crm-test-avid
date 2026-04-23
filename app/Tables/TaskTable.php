@@ -18,40 +18,40 @@ class TaskTable extends Table
         return Task::query()->with('project');
     }
 
-   public function getColumns(): array
-{
-    return [
-        TextColumn::make('id', 'ID')
-            ->sortable()
-            ->searchable()
-            ->width('6rem'),
+    public function getColumns(): array
+    {
+        return [
+            TextColumn::make('id', 'ID')
+                ->sortable()
+                ->searchable()
+                ->width('6rem'),
 
-        TextColumn::make('name', 'Nome')
-            ->sortable()
-            ->searchable(),
+            TextColumn::make('name', 'Nome')
+                ->sortable()
+                ->searchable(),
 
-        TextColumn::make('project.name', 'Progetto')
-            ->sortable()
-            ->searchable(),
+            TextColumn::make('project.name', 'Progetto')
+                ->sortable()
+                ->searchable(),
 
-        TextColumn::make('status', 'Stato')
-            ->sortable()
-            ->searchable(),
+            TextColumn::make('status', 'Stato')
+                ->sortable()
+                ->searchable(),
 
-        TextColumn::make('priority', 'Priorità')
-            ->sortable()
-            ->searchable(),
+            TextColumn::make('priority', 'Priorità')
+                ->sortable()
+                ->searchable(),
 
-        TextColumn::make('due_date', 'Scadenza')
-            ->sortable()
-            ->searchable()
-            ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('d/m/Y') : ''),
+            TextColumn::make('due_date', 'Scadenza')
+                ->sortable()
+                ->searchable()
+                ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('d/m/Y') : ''),
 
-        TextColumn::make('description', 'Descrizione')
-            ->sortable()
-            ->searchable(),
-    ];
-}
+            TextColumn::make('description', 'Descrizione')
+                ->sortable()
+                ->searchable(),
+        ];
+    }
 
     public function getFilters(): array
     {
@@ -64,6 +64,7 @@ class TaskTable extends Table
             Action::make('create', 'Nuovo')
                 ->icon('pi pi-plus')
                 ->url(avidRoute('tasks.create'))
+                ->openUrlInModal(true, 'md')
                 ->showLabel(),
 
             Action::make('delete', 'Elimina selezionati')
@@ -82,7 +83,8 @@ class TaskTable extends Table
             Action::make('edit', 'Modifica')
                 ->icon('pi pi-pen-to-square')
                 ->color(Color::Warning)
-                ->url(fn (Model $record) => avidRoute('tasks.edit', $record)),
+                ->url(fn (Model $record) => avidRoute('tasks.edit', $record))
+                ->openUrlInModal(true, 'md'),
 
             Action::make('delete', 'Elimina')
                 ->icon('pi pi-trash')
@@ -95,6 +97,6 @@ class TaskTable extends Table
 
     public function getRecordUrl(Model $record): ?string
     {
-        return avidRoute('tasks.edit', $record);
+        return null;
     }
 }
