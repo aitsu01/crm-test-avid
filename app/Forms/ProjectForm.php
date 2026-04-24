@@ -19,7 +19,7 @@ class ProjectForm extends Form
         return [
             Section::make()
                 ->schema([
-                    Grid::make(2)
+                    Grid::make(3)
                         ->schema([
                             Text::make('name', 'Nome')->required(),
                             Text::make('description', 'Descrizione'),
