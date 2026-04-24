@@ -17,7 +17,7 @@ class TaskController extends Controller
         return Inertia::render('avid/default/Table')
                 ->title(__('resources.task.index'))
                 ->breadcrumb(__('resources.task.index'))
-                ->size('md')
+                ->size('xl')
                 ->table(TaskTable::make());
     }
 

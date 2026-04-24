@@ -26,7 +26,7 @@ class UserController extends Controller
         return Inertia::render('avid/default/Table')
                 ->title(__('resources.user.index'))
                 ->breadcrumb(__('resources.user.index'))
-                ->size('md')
+                ->size('xl')
                 ->table(UserTable::make());
     }
 
