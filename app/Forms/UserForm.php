@@ -2,6 +2,7 @@
 
 namespace App\Forms;
 
+use App\Enums\UserRole;
 use Ingenia\Avid\Forms\Components\Field;
 use Ingenia\Avid\Forms\Components\Select;
 use Ingenia\Avid\Forms\Components\Text;
@@ -27,10 +28,7 @@ class UserForm extends Form
 
                             Select::make('role', 'Ruolo')
                                 ->required()
-                                ->options([
-                                    ['label' => 'Admin', 'key' => 'admin'],
-                                    ['label' => 'Utente', 'key' => 'user'],
-                                ]),
+                                ->options(UserRole::asOptions()),
                         ]),
                 ]),
         ];

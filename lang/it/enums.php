@@ -13,6 +13,11 @@ return [
         'done' => 'Completata',
     ],
 
+    'user_role' => [
+        'admin' => 'Admin',
+        'user' => 'Utente',
+    ],
+
 
 
 ];
